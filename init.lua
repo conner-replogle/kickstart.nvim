@@ -53,7 +53,7 @@ Kickstart Guide:
 
     (If you already know the Neovim basics, you can skip this step.)
 
-  Once you've completed that, you can continue working through **AND READING** the rest
+ Once you've completed that, you can continue working through **AND READING** the rest
   of the kickstart init.lua.
 
   Next, run AND READ `:help`.
@@ -161,6 +161,12 @@ vim.o.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 
+vim.o.expandtab = true
+
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
@@ -168,7 +174,7 @@ vim.o.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
-
+vim.keymap.set('n', '<leader>a', '<cmd>Explore<CR>')
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -351,6 +357,69 @@ require('lazy').setup({
     },
   },
 
+  {
+    'bassamsdata/namu.nvim',
+    config = function()
+      require('namu').setup {
+        -- Enable the modules you want
+        namu_symbols = {
+          enable = true,
+          options = {}, -- here you can configure namu
+        },
+        -- Optional: Enable other modules if needed
+        ui_select = { enable = false }, -- vim.ui.select() wrapper
+      }
+      -- === Suggested Keymaps: ===
+      vim.keymap.set('n', '<leader>ss', ':Namu symbols<cr>', {
+        desc = 'Jump to LSP symbol',
+        silent = true,
+      })
+      vim.keymap.set('n', '<leader>sw', ':Namu workspace<cr>', {
+        desc = 'LSP Symbols - Workspace',
+        silent = true,
+      })
+    end,
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    lazy = false, -- neo-tree will lazily load itself
+    ---@module "neo-tree"
+    ---@type neotree.Config?
+    config = function()
+      require('neo-tree').setup {
+        close_if_last_window = true,
+        window = {
+          position = 'float',
+        },
+      }
+      vim.keymap.set('n', '<leader>a', ':Neotree reveal position=float<cr>', {
+        desc = 'Jump to LSP symbol',
+        silent = true,
+      })
+    end,
+  },
+  {
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    ---@type Flash.Config
+    opts = {},
+  -- stylua: ignore
+  keys = {
+    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+    { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  },
+  },
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -404,6 +473,7 @@ require('lazy').setup({
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
+
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
@@ -413,6 +483,9 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          file_ignore_patterns = { 'node_modules', 'Pods', '.git', '**/*.d.ts' },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -429,8 +502,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
