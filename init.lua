@@ -191,6 +191,22 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
+vim.keymap.set('n', '<leader>e', function()
+  vim.diagnostic.open_float { focusable = true }
+  vim.diagnostic.open_float { focusable = true }
+end, { desc = 'Expand an Error into a float' })
+vim.keymap.set('n', '<leader>ne', function()
+  vim.diagnostic.jump { count = 1, float = true }
+end, { desc = 'Goto next error' })
+
+-- <Esc> to hide float
+vim.keymap.set('n', '<Esc>', function()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative == 'win' then
+      vim.api.nvim_win_close(win, false)
+    end
+  end
+end, { desc = 'Close opened float window' })
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
