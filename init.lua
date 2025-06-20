@@ -152,6 +152,7 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+vim.opt.completeopt = { 'popup' }
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
 
@@ -846,6 +847,19 @@ require('lazy').setup({
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
     },
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    dependencies = {
+      { 'github/copilot.vim' }, -- or zbirenbaum/copilot.lua
+      { 'nvim-lua/plenary.nvim', branch = 'master' }, -- for curl, log and async functions
+    },
+    build = 'make tiktoken', -- Only on MacOS or Linux
+    opts = {
+
+      -- See Configuration section for options
+    },
+    -- See Commands section for default commands if you want to lazy load on them
   },
 
   { -- Autocompletion
