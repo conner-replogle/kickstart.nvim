@@ -375,6 +375,16 @@ require('lazy').setup({
   },
 
   {
+    'kndndrj/nvim-dbee',
+    cmd = 'Dbee', -- Lazy-load on command
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    build = function()
+      require('dbee').install 'curl' -- Requires `curl`
+    end,
+    opts = {}, -- Add custom config here
+  },
+
+  {
     'bassamsdata/namu.nvim',
     config = function()
       require('namu').setup {
